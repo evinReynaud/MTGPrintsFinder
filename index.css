@@ -1,0 +1,28 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    margin: auto;
+}
+
+.cards-input {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    textarea {
+        min-width: calc(100% - 8px);
+        max-width: calc(100% - 8px);
+        min-height: 5em;
+        height: 15em;
+    }
+
+    button {
+        margin: 1em auto;
+    }
+}
+

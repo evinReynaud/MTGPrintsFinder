@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <title>MTG Prints Finder</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+        <link rel="stylesheet" href="index.css">
         <script defer src="./index.js"></script>
     </head>
     <body>
-      <h1>MTG Prints Finder</h1>
-      <div id="input">
-        <textarea type="text"></textarea>
-        <br>
-        <button>Find prints</button>
-      </div>
-      <div id="result"></div>
+    <div class="content">
+        <h1>MTG Prints Finder</h1>
+        <div id="input" class="cards-input">
+            <textarea aria-label="Cards input"></textarea>
+            <button>Find prints</button>
+        </div>
+        <div id="result"></div>
+    </div>
     </body>
 </html>
