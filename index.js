@@ -7,6 +7,8 @@ const textarea = document.querySelector('textarea');
 const button = document.querySelector('button');
 const resultDiv = document.getElementById('result');
 
+textarea.setAttribute('placeholder', `Supported syntax:\n\n` + syntaxText);
+
 function later(delay) {
   return new Promise(function (resolve) {
     setTimeout(resolve, delay);
