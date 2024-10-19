@@ -1,38 +1,22 @@
 // TODO
 // Add set logos
 
-const API_DELAY_MS = 100;
-
 const textarea = document.querySelector('textarea');
 const button = document.querySelector('button');
 const resultDiv = document.getElementById('result');
 
 textarea.setAttribute('placeholder', `Supported syntax:\n\n` + syntaxText);
 
-function later(delay) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, delay);
-  });
-}
-
-// setAndId being in the format "xln/96" or "xln/96/fr"
-function getCard(setAndId) {
-  return fetch(`https://api.scryfall.com/cards/${setAndId}`).then((res) =>
-    res.json()
-  );
-}
-
-function getCardPrints(cardJson) {
-  return fetch(cardJson.prints_search_uri)
-    .then((res) => res.json())
-    .then((json) => json.data)
-    .then((cards) => cards.filter((card) => card.games.includes('paper')))
-    .then((cards) =>
-      cards.map((card) => ({
+function getSetsMap(parsedCards) {
+  // Assumes all cards are in the format EXT/000/ln
+  const cardPrints = [];
+  return getCardPrintsAndDo(parsedCards, (input, foundCards) => {
+    if (foundCards !== undefined) {
+      const prints = foundCards.map((card) => ({
         card: {
           oracle_id: card.oracle_id,
           name: card.name,
-          printed_name: cardJson.printed_name,
+          printed_name: card.printed_name || card.name,
           set: card.set,
           collector_number: card.collector_number,
         },
@@ -43,22 +27,14 @@ function getCardPrints(cardJson) {
           scryfall_set_uri: card.scryfall_set_uri,
           set_uri: card.set_uri,
         },
-      }))
-    );
-}
-
-function getCardPrintsFromSetAndId(setAndId) {
-  return getCard(setAndId).then((card) => getCardPrints(card));
-}
-
-function getSetsMap(cardsIds) {
-  return Promise.all(
-    cardsIds.map((card, i) =>
-      later(i * API_DELAY_MS).then(() => getCardPrintsFromSetAndId(card))
-    )
-  )
-    .then((cards) => cards.flat())
-    .then((cards) => Map.groupBy(cards, (cardSet) => cardSet.set.set));
+      }));
+      cardPrints.push(...prints);
+    } else {
+      console.error(`An error occurred while fetching card "${input.name}"`);
+      // TODO Handle error
+    }
+  })
+    .then(() => Map.groupBy(cardPrints, (cardSet) => cardSet.set.set));
 }
 
 function formatMap(setMap) {
@@ -171,7 +147,8 @@ function readInput() {
     .filter((str) => !!str);
 
   if (value.length > 0) {
-    getSetsMap(value).then(formatMapHtml);
+    const parsedCards = value.map((str) => parseMTGCardString(str));
+    getSetsMap(parsedCards).then(formatMapHtml);
   }
 }
 
