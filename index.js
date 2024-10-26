@@ -7,10 +7,12 @@ const resultDiv = document.getElementById('result');
 
 textarea.setAttribute('placeholder', `Supported syntax:\n\n` + syntaxText);
 
+const scryfallService = new ScryfallService();
+
 function getSetsMap(parsedCards) {
   // Assumes all cards are in the format EXT/000/ln
   const cardPrints = [];
-  return getCardPrintsAndDo(parsedCards, (input, foundCards) => {
+  return scryfallService.getCardPrintsAndDo(parsedCards, (input, foundCards) => {
     if (foundCards !== undefined) {
       const prints = foundCards.map((card) => ({
         card: {
